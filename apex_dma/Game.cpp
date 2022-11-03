@@ -7,7 +7,6 @@ extern bool firing_range;
 extern float glowr;
 extern float glowg;
 extern float glowb;
-
 //glowtype not used, but dont delete its still used.
 extern int glowtype;
 extern int glowtype2;
@@ -133,49 +132,9 @@ float Entity::lastVisTime()
   return *(float*)(buffer + OFFSET_VISIBLE_TIME);
 }
 
-
-
-
 //https://www.unknowncheats.me/forum/apex-legends/496984-getting-hitbox-positions-cstudiohdr-externally.html
 //https://www.unknowncheats.me/forum/3499185-post1334.html
 //hitboxes
-
-//old one
-//Vector Entity::getBonePositionByHitbox(int id)
-//{
-//	Vector origin = getPosition();
-//
-//    //BoneByHitBox
-//	uint64_t Model = *(uint64_t*)(buffer + OFFSET_STUDIOHDR);
-//
-//	//get studio hdr
-//	uint64_t StudioHdr;
-//	apex_mem.Read<uint64_t>(Model + 0x8, StudioHdr);
-//
-//    //get hitbox array
-//	int HitBoxsArray_set;
-//	apex_mem.Read<int>(StudioHdr + 0x34,HitBoxsArray_set);
-//	uint64_t HitBoxsArray = StudioHdr + HitBoxsArray_set;
-//
-//	int HitboxIndex;
-//	apex_mem.Read<int>(HitBoxsArray + 0x8, HitboxIndex);
-//
-//	int Bone;
-//	apex_mem.Read<int>(HitBoxsArray + HitboxIndex + (id * 0x0038), Bone);
-//
-//	if(Bone < 0 || Bone > 255)
-//		return Vector();
-//
-//    //hitpos
-//	uint64_t BoneArray = *(uint64_t*)(buffer + OFFSET_BONES);
-//
-//	matrix3x4_t Matrix = {};
-//	apex_mem.Read<matrix3x4_t>(BoneArray + Bone * sizeof(matrix3x4_t), Matrix);
-//
-//	return Vector(Matrix.m_flMatVal[0][3] + origin.x, Matrix.m_flMatVal[1][3] + origin.y, Matrix.m_flMatVal[2][3] + origin.z);
-//}
-
-//new one
 Vector Entity::getBonePositionByHitbox(int id)
 {
 	Vector origin = getPosition();
@@ -252,16 +211,8 @@ bool Entity::isZooming()
 //custom glow color RGB
 void Entity::enableGlow(GColor color)
 {
-	
 	//apex_mem.Write<GlowMode>(ptr + GLOW_TYPE, { 101,102,96,90 });
 	apex_mem.Write<GColor>(ptr + GLOW_COLOR, color);
-
-	
-	
-	
-
-	
-
 	apex_mem.Write<int>(ptr + OFFSET_GLOW_ENABLE_GLOW_CONTEXT, 1);
 	apex_mem.Write<int>(ptr + OFFSET_GLOW_THROUGH_WALLS_GLOW_VISIBLE_TYPE, 2);
 	
@@ -272,9 +223,9 @@ void Entity::enableGlow(GColor color)
 	//apex_mem.Write<float>(ptr + GLOW_COLOR_G, glowg);
 	//apex_mem.Write<float>(ptr + GLOW_COLOR_B, glowb);
 }
+
 void Entity::disableGlow()
 {
-	
 	apex_mem.Write<int>(ptr + OFFSET_GLOW_T1, 0);
 	apex_mem.Write<int>(ptr + OFFSET_GLOW_T2, 0);
 	apex_mem.Write<int>(ptr + OFFSET_GLOW_ENABLE, 2);
