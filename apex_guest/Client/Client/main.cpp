@@ -40,7 +40,7 @@ bool toggleaim = false;
 bool toggleaim2 = false;
 extern int e;
 bool firing_range = false;
-bool use_nvidia = true; //Nvidia Shadowplay Overlay
+bool use_nvidia = false; //Nvidia Shadowplay Overlay
 bool active = true;
 bool ready = false;
 extern visuals v;
@@ -162,7 +162,7 @@ bool weapon_car_smg = false;
 // Aim distance check
 float aimdist = 9905.0f;
 //item glow brightness
-int itemglowbrightness = 10;
+int itemglowbrightness = 9;
 
 
 bool thirdperson = false;
@@ -186,6 +186,14 @@ bool k_f20 = 0;
 bool k_f100 = 0;
 
 player players[100];
+
+
+void randomBone() {
+	int boneArray[2] = { 1, 2 };
+	int randVal = rand() % 2;
+	bone = boneArray[randVal];
+	Sleep(1250);
+}
 
 //Radar Code
 #define M_PI		3.14159265358979323846	// matches value in gcc v2 math.h
@@ -242,9 +250,9 @@ typedef struct
 	DWORD B;
 	DWORD A;
 }RGBA;
-//static void FilledRectangle(int x, int y, int w, int h, RGBA color)
+//static void FilledRectangle(int x, int y, int w, int h, RGBA color) //USED TO BE COMMENTED
 //{
-//	ImGui::GetWindowDrawList()->AddRectFilled(ImVec2(x, y), ImVec2(x + w, y + h), ImGui::ColorConvertFloat4ToU32(ImVec4(color.R / 255.0, color.G / 255.0, color.B / 255.0, color.A / 255.0)), 0, 0);
+	//ImGui::GetWindowDrawList()->AddRectFilled(ImVec2(x, y), ImVec2(x + w, y + h), ImGui::ColorConvertFloat4ToU32(ImVec4(color.R / 255.0, color.G / 255.0, color.B / 255.0, color.A / 255.0)), 0, 0);
 //}
 
 //Color Team Radar Test. oh god why... This is stupid.. dont do this.. it works tho
@@ -346,8 +354,8 @@ namespace RadarSettings
 	bool teamRadar = true;
 	bool enemyRadar = true;
 	int xAxis_Radar = 0;
-	int yAxis_Radar = 400;
-	int radartype = 0;
+	int yAxis_Radar = 400; //400
+	int radartype = 0; 
 	int width_Radar = 400;
 	int height_Radar = 400;
 	int distance_Radar = 250;
@@ -469,7 +477,7 @@ void MiniMapRadar(D3DXVECTOR3 EneamyPos, D3DXVECTOR3 LocalPos, float LocalPlayer
 	//Radar Window Flags: No Move, Resize, Title bar, Background etc. makes it so you can change it once set.
 
 	//slash out  | ImGuiWindowFlags_::ImGuiWindowFlags_NoMove to move the minimap
-	TargetFlags = ImGuiWindowFlags_::ImGuiWindowFlags_NoResize | ImGuiWindowFlags_::ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_::ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_::ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_::ImGuiWindowFlags_NoMove;
+	TargetFlags = ImGuiWindowFlags_::ImGuiWindowFlags_NoResize | ImGuiWindowFlags_::ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_::ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_::ImGuiWindowFlags_NoTitleBar; //| ImGuiWindowFlags_::ImGuiWindowFlags_NoMove;
 	if (!firstS) //dunno
 	{
 		ImGui::SetNextWindowPos(ImVec2{ 1200, 60 }, ImGuiCond_Once);
@@ -480,14 +488,14 @@ void MiniMapRadar(D3DXVECTOR3 EneamyPos, D3DXVECTOR3 LocalPos, float LocalPlayer
 	{
 		ImGui::SetNextWindowSize({ 250, 250 });
 		ImGui::Begin(("Radar"), 0, TargetFlags);
-		//if (ImGui::Begin(xorstr("Radar", 0, ImVec2(200, 200), -1.f, TargetFlags))) {
+		//if (ImGui::Begin(XorStr("Radar", 0, ImVec2(200, 200), -1.f, TargetFlags))) {
 		{
 			ImDrawList* Draw = ImGui::GetWindowDrawList();
 			ImVec2 DrawPos = ImGui::GetCursorScreenPos();
 			ImVec2 DrawSize = ImGui::GetContentRegionAvail();
 			ImVec2 midRadar = ImVec2(DrawPos.x + (DrawSize.x / 2), DrawPos.y + (DrawSize.y / 2));
 
-			//unslash to set to minimap, it helps line it up
+			//unslash to set to minimap, it helps line it up //USED TO BE COMMENTED
 			//ImGui::GetWindowDrawList()->AddLine(ImVec2(midRadar.x - DrawSize.x / 2.f, midRadar.y), ImVec2(midRadar.x + DrawSize.x / 2.f, midRadar.y), IM_COL32(255, 255, 255, 255));
 			//ImGui::GetWindowDrawList()->AddLine(ImVec2(midRadar.x, midRadar.y - DrawSize.y / 2.f), ImVec2(midRadar.x, midRadar.y + DrawSize.y / 2.f), IM_COL32(255, 255, 255, 255));
 
@@ -544,8 +552,7 @@ world Overflow(ImVec2(-3344.994629, -4018.093018), ImVec2(552, 431), ImVec2(5039
 world DropOff(ImVec2(3135.113281, 1654.107666), ImVec2(1151, 603), ImVec2(-2920.918701, 811.240479), ImVec2(722, 663));
 world Habitat4(ImVec2(4482.470215, -604.362854), ImVec2(1205, 544), ImVec2(-4464.019043, 593.067688), ImVec2(650, 470));
 world Encore(ImVec2(4144.926270, 468.957611), ImVec2(1184, 472), ImVec2(-3791.070313, 3.092307), ImVec2(692, 501));
-world PartyCrasher(ImVec2(-3275.972900, 3646.970703), ImVec2(589, 197), ImVec2(1085.708740, -3869.658936), ImVec2(1022, 943));
-//TODO get map auto 
+world PartyCrasher(ImVec2(-3275.972900, 3646.970703), ImVec2(589, 197), ImVec2(1085.708740, -3869.658936), ImVec2(1022, 943));//TODO get map auto 
 ImVec2 worldToScreenMap(D3DXVECTOR3 origin, int TeamID) {
 		float ratioX;
 		float ratioY;
@@ -560,10 +567,10 @@ ImVec2 worldToScreenMap(D3DXVECTOR3 origin, int TeamID) {
 		}
 		*/
 		if (stormpoint == true) { //Storm Point
-			ratioX = BrokenMoon.ratioX;
-			ratioY = BrokenMoon.ratioY;
-			w1 = BrokenMoon.w1;
-			s1 = BrokenMoon.s1;
+            ratioX = BrokenMoon.ratioX;
+            ratioY = BrokenMoon.ratioY;
+            w1 = BrokenMoon.w1;
+            s1 = BrokenMoon.s1;
 		}
 		
 		else {
@@ -701,23 +708,63 @@ void Overlay::RenderEsp()
 				{
 					std::string distance = std::to_string(players[i].dist / 39.62);
 					distance = distance.substr(0, distance.find('.')) + "m(" + std::to_string(players[i].entity_team) + ")";
-
+					//Draws Box for Box ESP Option
+					if (v.box)
+					{
+						if (players[i].visible)
+						{
+							if (players[i].dist < 1600.0f)
+								DrawBox(RED, players[i].boxMiddle, players[i].h_y, players[i].width, players[i].height); //BOX
+							else
+								DrawBox(ORANGE, players[i].boxMiddle, players[i].h_y, players[i].width, players[i].height); //BOX
+						}
+						else
+						{
+							DrawBox(WHITE, players[i].boxMiddle, players[i].h_y, players[i].width, players[i].height); //white if player not visible
+						}
+					}
 					float radardistance = (int)((players[i].LocalPlayerPosition, players[i].dist) / 39.62);
-					
+					//Dynamic FOV
+					if (players[i].dist / 39.62 < dynamicfovmax)
+					{
+						max_fov = dynamicfov;
+					}
+					else
+					{
+						max_fov = max_fov2;
+					}
 					//Radar Stuff
 					if (minimapradar == true)
 					{
 							MiniMapRadar(players[i].EntityPosition, players[i].LocalPlayerPosition, players[i].localviewangle.y, radardistance, players[i].entity_team);
 					}
+					//Draws a colored line from you to an enemy and changes color based on visability
 					if (v.line)
-						DrawLine(ImVec2((float)(getWidth() / 2), (float)getHeight()), ImVec2(players[i].b_x, players[i].b_y), BLUE, 1); //LINE FROM MIDDLE SCREEN
-
+					{
+						if (players[i].visible)
+						{
+							if (players[i].dist < 1600.0f)
+							{
+								DrawLine(ImVec2((float)(getWidth() / 2), (float)getHeight()), ImVec2(players[i].b_x, players[i].b_y), RED, 1); //Line in the middle of screen
+							}
+							else
+							{
+								DrawLine(ImVec2((float)(getWidth() / 2), (float)getHeight()), ImVec2(players[i].b_x, players[i].b_y), ORANGE, 1); //Line in the middle of screen
+							}
+						}
+						else
+						{
+							//DrawLine(ImVec2((float)(getWidth() / 2), (float)getHeight()), ImVec2(players[i].b_x, players[i].b_y), WHITE, 1); //Line in the middle of screen
+						}
+					}
+					//Shows distance in meters from enemy player
 					if (v.distance)
 					{
 						if (players[i].knocked)
 							String(ImVec2(players[i].boxMiddle, (players[i].b_y + 1)), RED, distance.c_str());  //DISTANCEs			else
 							String(ImVec2(players[i].boxMiddle, (players[i].b_y + 1)), GREEN, distance.c_str());  //DISTANCE
 					}
+					//Draws Seer Q ESP
 					if (v.healthbar)
 						if (players[i].dist < 16000.0f)
 						{
@@ -728,14 +775,16 @@ void Overlay::RenderEsp()
 					if (mainradarmap == true)
 
 						worldToScreenMap(players[i].EntityPosition, players[i].entity_team);
-
-						//String(ImVec2(players[i].boxMiddle, (players[i].b_y - players[i].height - 15)), WHITE, players[i].name);
+					//Displays enemy players name
+					if (v.name)
+						String(ImVec2(players[i].boxMiddle, (players[i].b_y - players[i].height - 15)), WHITE, players[i].name);
 				}
 			}
 			ImGui::End();
 		}
 	}
 }
+
 
 int main(int argc, char** argv)
 {
@@ -831,17 +880,17 @@ int main(int argc, char** argv)
 	add[89] = (uintptr_t)&weapon_car_smg;
 	add[90] = (uintptr_t)&aimdist;
 	add[91] = (uintptr_t)&itemglowbrightness;
-	//glow visable
-	add[92] = (uintptr_t)&glowrviz;
-	add[93] = (uintptr_t)&glowgviz;
-	add[94] = (uintptr_t)&glowbviz;
-	//knocked
-	add[95] = (uintptr_t)&glowrknocked;
-	add[96] = (uintptr_t)&glowgknocked;
-	add[97] = (uintptr_t)&glowbknocked;
+    //glow visable
+    add[92] = (uintptr_t)&glowrviz;
+    add[93] = (uintptr_t)&glowgviz;
+    add[94] = (uintptr_t)&glowbviz;
+    //knocked
+    add[95] = (uintptr_t)&glowrknocked;
+    add[96] = (uintptr_t)&glowgknocked;
+    add[97] = (uintptr_t)&glowbknocked;
 
 	
-	printf(XorStr("Game Version v3.0.15.37 |-| Stuff |-| Add me offset: 0x%I64x\n"), (uint64_t)&add[0] - (uint64_t)GetModuleHandle(NULL));
+	printf(XorStr("Game Version v3.0.12.19 |-| Dynamic Fov Test |-| Add me offset: 0x%I64x\n"), (uint64_t)&add[0] - (uint64_t)GetModuleHandle(NULL));
 
 	Overlay ov1 = Overlay();
 	ov1.Start();
@@ -858,7 +907,7 @@ int main(int argc, char** argv)
 	if (active)
 	{
 		ready = true;
-		printf(XorStr("Ready To Bring The Pain\n"));
+		printf(XorStr("Ready To Bring The Cure\n"));
 	}
 
 	while (active)
@@ -900,6 +949,9 @@ int main(int argc, char** argv)
 				config >> v.healthbar;
 				config >> v.shieldbar;
 				config >> v.distance;
+				config >> v.line;
+				config >> v.box;
+				config >> v.name;
 				config >> thirdperson;
 				config >> minimapradar;
 				config >> lightbackpack;
@@ -983,20 +1035,20 @@ int main(int argc, char** argv)
 				config >> dynamicfov;
 				config >> dynamicfovmax;
 				config >> max_fov2;
-				//glow visable
-				config >> glowrviz;
-				config >> glowgviz;
-				config >> glowbviz;
-				config >> glowcolorviz[0];
-				config >> glowcolorviz[1];
-				config >> glowcolorviz[2];
-				//glow knocked
-				config >> glowrknocked;
-				config >> glowgknocked;
-				config >> glowbknocked;
-				config >> glowcolorknocked[0];
-				config >> glowcolorknocked[1];
-				config >> glowcolorknocked[2];
+                //glow visable
+                config >> glowrviz;
+                config >> glowgviz;
+                config >> glowbviz;
+                config >> glowcolorviz[0];
+                config >> glowcolorviz[1];
+                config >> glowcolorviz[2];
+                //glow knocked
+                config >> glowrknocked;
+                config >> glowgknocked;
+                config >> glowbknocked;
+                config >> glowcolorknocked[0];
+                config >> glowcolorknocked[1];
+                config >> glowcolorknocked[2];
 				config.close();
 			}
 		}
@@ -1047,6 +1099,7 @@ int main(int argc, char** argv)
 		if (IsKeyDown(aim_key) && toggleaim)
 		{
 			aiming = true;
+			randomBone();
 		}
 
 		else if (IsKeyDown(aim_key2) && toggleaim2)
@@ -1060,7 +1113,7 @@ int main(int argc, char** argv)
 	ready = false;
 	ov1.Clear();
 	if (!use_nvidia)
-		system(XorStr("taskkill /F /T /IM overlay_ap.exe")); //custom overlay process name
+		system(XorStr("taskkill /F /T /IM Stragulum.exe")); //custom overlay process name
 	return 0;
 }
 
