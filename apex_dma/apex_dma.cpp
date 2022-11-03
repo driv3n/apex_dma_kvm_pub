@@ -8,7 +8,6 @@
 #include <cfloat>
 #include "Game.h"
 #include <thread>
-
 //this is a test, with seconds
 Memory apex_mem;
 Memory client_mem;
@@ -52,7 +51,6 @@ float glowbviz = 120.0f; //Blue 0-255, higher is brighter color.
 float glowrknocked = 0.0f; //Red 0-255, higher is brighter color.
 float glowgknocked = 120.0f; //Green 0-255, higher is brighter color.
 float glowbknocked = 120.0f; //Blue 0-255, higher is brighter color.
-
 
 //Removed but not all the way, dont edit.
 int glowtype = 1;
@@ -191,7 +189,6 @@ bool valid = false;
 bool lock = false;
 
 
-
 //Player Definitions, dont edit unless you know what you are doing.
 typedef struct player
 {
@@ -270,6 +267,7 @@ void SetPlayerGlow(Entity& LPlayer, Entity& Target, int index)
 }
 
 
+
 void ProcessPlayer(Entity& LPlayer, Entity& target, uint64_t entitylist, int index)
 {
 	int entity_team = target.getTeamId();
@@ -295,6 +293,7 @@ void ProcessPlayer(Entity& LPlayer, Entity& target, uint64_t entitylist, int ind
 	//Prints POS of localplayer for map cords for full map radar. only enable when adding a new map or fixing a old one, will output to console.
 	//std::printf("  X: %.6f   ||    Y:%.6f",LocalPlayerPosition.x, LocalPlayerPosition.y); //Prints x and y cords of localplayer to get mainmap radar stuff.
 	if (dist > aimdist) return;
+	
 	
 	
 	//Firing range stuff
@@ -331,7 +330,6 @@ void ProcessPlayer(Entity& LPlayer, Entity& target, uint64_t entitylist, int ind
 			tmp_aimentity = target.ptr;
 		}
 	}
-	
 	SetPlayerGlow(LPlayer, target, index);
 	lastvis_aim[index] = target.lastVisTime();
 }
@@ -415,8 +413,6 @@ void DoActions()
 						continue;
 					}
 
-					
-
 					ProcessPlayer(LPlayer, Target, entitylist, c);
 					c++;
 				}
@@ -444,7 +440,6 @@ void DoActions()
 						continue;
 					}
 
-					
 				}
 			}
 
@@ -960,13 +955,7 @@ static void set_vars(uint64_t add_addr)
 	uint64_t glowbknocked_addr = 0;
 	client_mem.Read<uint64_t>(add_addr + sizeof(uint64_t)*97, glowbknocked_addr);
 	
-	
-	
-	
-
-	
-	
-	//good god 97 of em.. why
+	//good god 97 of em.. why (lol)
 	
 
 	uint32_t check = 0;
@@ -1085,14 +1074,10 @@ static void set_vars(uint64_t add_addr)
 			client_mem.Read<float>(glowrviz_addr, glowrviz);
 			client_mem.Read<float>(glowgviz_addr, glowgviz);
 			client_mem.Read<float>(glowbviz_addr, glowbviz);
-			//knocked
+//knocked
 			client_mem.Read<float>(glowrknocked_addr, glowrknocked);
 			client_mem.Read<float>(glowgknocked_addr, glowgknocked);
 			client_mem.Read<float>(glowbknocked_addr, glowbknocked);
-			
-		
-			
-	
 
 
 			if(esp && next2)
@@ -1116,9 +1101,6 @@ static void set_vars(uint64_t add_addr)
 	vars_t = false;
 }
 
-// Item Glow Stuff
-
- 
 static void item_glow_t()
 {
 	item_t = true;
@@ -1871,7 +1853,7 @@ static void item_glow_t()
 				}
 				k=1;
 				//Change the 60 ms to lower to make the death boxes filker less.
-				std::this_thread::sleep_for(std::chrono::milliseconds(1));
+				std::this_thread::sleep_for(std::chrono::milliseconds(60));
 			}
 			else
 			{		
@@ -1909,12 +1891,12 @@ int main(int argc, char *argv[])
 		return 0;
 	}
 
-	const char* cl_proc = "MonkeyCure.exe";
+	const char* cl_proc = "Stagnant.exe";
 	const char* ap_proc = "R5Apex.exe";
 	//const char* ap_proc = "EasyAntiCheat_launcher.exe";
 
 	//Client "add" offset
-	uint64_t add_off = 0x137a00; //todo make this auto update..
+	uint64_t add_off = 0x4fcc0; //todo make this auto update..
 
 	std::thread aimbot_thr;
 	std::thread esp_thr;
