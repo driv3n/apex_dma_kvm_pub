@@ -3,15 +3,7 @@
 extern Memory apex_mem;
 
 extern bool firing_range;
-//glow color and brigtness
-extern float glowr;
-extern float glowg;
-extern float glowb;
-//glowtype not used, but dont delete its still used.
-extern int glowtype;
-extern int glowtype2;
-//setting up vars, dont edit 
-float smooth = 100.0f;
+float smooth = 12.0f;
 bool aim_no_recoil = true;
 int bone = 2;
 
@@ -46,7 +38,7 @@ void get_class_name(uint64_t entity_ptr, char* out_str)
 
 	apex_mem.ReadArray<char>(client_class.pNetworkName, out_str, 32);
 }
-//patched out but left in for reasons
+
 void charge_rifle_hack(uint64_t entity_ptr)
 {
 	extern uint64_t g_Base;
@@ -75,23 +67,10 @@ int Entity::getHealth()
 {
 	return *(int*)(buffer + OFFSET_HEALTH);
 }
-//seer health and shield i added
-#define OFFSET_ARMOR_TYPE             0x4604
-int Entity::getArmortype()
-{
-	int armortype;
-	apex_mem.Read<int>(ptr + OFFSET_ARMOR_TYPE, armortype);
-	return armortype;
-}
 
 int Entity::getShield()
 {
 	return *(int*)(buffer + OFFSET_SHIELD);
-}
-
-int Entity::getMaxshield()
-{
-	return *(int*)(buffer + OFFSET_MAXSHIELD);
 }
 
 Vector Entity::getAbsVelocity()
@@ -108,7 +87,7 @@ bool Entity::isPlayer()
 {
 	return *(uint64_t*)(buffer + OFFSET_NAME) == 125780153691248;
 }
-//firing range dummys
+
 bool Entity::isDummy()
 {
 	char class_name[33] = {};
@@ -132,9 +111,7 @@ float Entity::lastVisTime()
   return *(float*)(buffer + OFFSET_VISIBLE_TIME);
 }
 
-//https://www.unknowncheats.me/forum/apex-legends/496984-getting-hitbox-positions-cstudiohdr-externally.html
-//https://www.unknowncheats.me/forum/3499185-post1334.html
-//hitboxes
+
 Vector Entity::getBonePositionByHitbox(int id)
 {
 	Vector origin = getPosition();
@@ -208,20 +185,13 @@ bool Entity::isZooming()
 {
 	return *(int*)(buffer + OFFSET_ZOOMING) == 1;
 }
-//custom glow color RGB
-void Entity::enableGlow(GColor color)
+
+void Entity::enableGlow()
 {
-	//apex_mem.Write<GlowMode>(ptr + GLOW_TYPE, { 101,102,96,90 });
-	apex_mem.Write<GColor>(ptr + GLOW_COLOR, color);
-	apex_mem.Write<int>(ptr + OFFSET_GLOW_ENABLE_GLOW_CONTEXT, 1);
-	apex_mem.Write<int>(ptr + OFFSET_GLOW_THROUGH_WALLS_GLOW_VISIBLE_TYPE, 2);
-	
-	//apex_mem.Write<int>(ptr + OFFSET_GLOW_ENABLE, glowtype);
-	//apex_mem.Write<int>(ptr + OFFSET_GLOW_THROUGH_WALLS, glowtype2);
-	// Color
-	//apex_mem.Write<float>(ptr + GLOW_COLOR_R, glowr);
-	//apex_mem.Write<float>(ptr + GLOW_COLOR_G, glowg);
-	//apex_mem.Write<float>(ptr + GLOW_COLOR_B, glowb);
+	apex_mem.Write<int>(ptr + OFFSET_GLOW_T1, 16256);
+	apex_mem.Write<int>(ptr + OFFSET_GLOW_T2, 1193322764);
+	apex_mem.Write<int>(ptr + OFFSET_GLOW_ENABLE, 7);
+	apex_mem.Write<int>(ptr + OFFSET_GLOW_THROUGH_WALLS, 2);
 }
 
 void Entity::disableGlow()
@@ -230,11 +200,6 @@ void Entity::disableGlow()
 	apex_mem.Write<int>(ptr + OFFSET_GLOW_T2, 0);
 	apex_mem.Write<int>(ptr + OFFSET_GLOW_ENABLE, 2);
 	apex_mem.Write<int>(ptr + OFFSET_GLOW_THROUGH_WALLS, 5);
-	//apex_mem.Write<float>(ptr + GLOW_COLOR_R, 0.0f);
-	//apex_mem.Write<float>(ptr + GLOW_COLOR_G, 0.0f);
-	//apex_mem.Write<float>(ptr + GLOW_COLOR_B, 0.0f);
-	//apex_mem.Write<int>(ptr + OFFSET_GLOW_ENABLE, 2);
-	//apex_mem.Write<int>(ptr + OFFSET_GLOW_THROUGH_WALLS, 5);
 }
 
 void Entity::SetViewAngles(SVector angles)
@@ -264,29 +229,13 @@ void Entity::get_name(uint64_t g_Base, uint64_t index, char* name)
     apex_mem.Read<uint64_t>(g_Base + OFFSET_NAME_LIST + index, name_ptr);
 	apex_mem.ReadArray<char>(name_ptr, name, 32);
 }
-//Items
+
 bool Item::isItem()
 {
 	char class_name[33] = {};
 	get_class_name(ptr, class_name);
 
 	return strncmp(class_name, "CPropSurvival", 13) == 0;
-}
-//Deathboxes
-bool Item::isBox()
-{
-	char class_name[33] = {};
-	get_class_name(ptr, class_name);
-
-	return strncmp(class_name, "CDeathBoxProp", 13) == 0;
-}
-//Traps
-bool Item::isTrap()
-{
-	char class_name[33] = {};
-	get_class_name(ptr, class_name);
-
-	return strncmp(class_name, "caustic_trap", 13) == 0;
 }
 
 bool Item::isGlowing()
@@ -415,7 +364,6 @@ Item getItem(uintptr_t ptr)
 	return entity;
 }
 
-
 bool WorldToScreen(Vector from, float* m_vMatrix, int targetWidth, int targetHeight, Vector& to)
 {
 	float w = m_vMatrix[12] * from.x + m_vMatrix[13] * from.y + m_vMatrix[14] * from.z + m_vMatrix[15];
@@ -459,7 +407,7 @@ void WeaponXEntity::update(uint64_t LocalPlayer)
     apex_mem.Read<float>(wep_entity + OFFSET_BULLET_SCALE, projectile_scale);
 	zoom_fov = 0;
     apex_mem.Read<float>(wep_entity + OFFSET_ZOOM_FOV, zoom_fov);
-		ammo = 0;
+	ammo = 0;
     apex_mem.Read<int>(wep_entity + OFFSET_AMMO, ammo);
 }
 
