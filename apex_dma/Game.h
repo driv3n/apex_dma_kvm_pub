@@ -1,7 +1,6 @@
 #include "Math.h"
 #include "offsets.h"
 #include "memory.h"
-#include "glowmode.h"
 
 #define NUM_ENT_ENTRIES			(1 << 12)
 #define ENT_ENTRY_MASK			(NUM_ENT_ENTRIES - 1)
@@ -15,19 +14,6 @@ typedef struct Bone
 	uint8_t pad3[0xC];
 	float z;
 }Bone;
-
-struct GColor 
-{
-    float r, g, b;
-};
-
-
-
-struct Fade 
-{
-    int a, b;
-    float c, d, e, f;
-};
 
 class Entity
 {
@@ -43,8 +29,6 @@ public:
 	int getTeamId();
 	int getHealth();
 	int getShield();
-	int getArmortype();
-	int getMaxshield();
 	bool isGlowing();
 	bool isZooming();
 	Vector getAbsVelocity();
@@ -54,7 +38,8 @@ public:
 	QAngle GetRecoil();
 	Vector GetViewAnglesV();
 	float GetYaw();
-	void enableGlow(GColor color);
+
+	void enableGlow();
 	void disableGlow();
 	void SetViewAngles(SVector angles);
 	void SetViewAngles(QAngle& angles);
@@ -71,14 +56,11 @@ public:
 	uint8_t buffer[0x3FF0];
 	Vector getPosition();
 	bool isItem();
-	bool isBox();
-	bool isTrap();
 	bool isGlowing();
+	
 	void enableGlow();
 	void disableGlow();
 };
-
-
 
 class WeaponXEntity
 {
@@ -108,7 +90,6 @@ struct ClientClass {
 
 Entity getEntity(uintptr_t ptr);
 Item getItem(uintptr_t ptr);
-
 bool WorldToScreen(Vector from, float* m_vMatrix, int targetWidth, int targetHeight, Vector& to);
 float CalculateFov(Entity& from, Entity& target);
 QAngle CalculateBestBoneAim(Entity& from, uintptr_t target, float max_fov);
